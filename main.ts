@@ -41,6 +41,14 @@ return function(errors)
     .delay(delay);
 }
 }
+
+function loadWithFetch(url:string){
+    return Observable.defer(()=>{
+        return Observable.fromPromise(fetch(url).then(r=>r.json()));
+    });
+
+
+}
 function renderMovies(movies) {
     movies.forEach(m => {
         let div = document.createElement("div");
@@ -52,8 +60,10 @@ function renderMovies(movies) {
     
 }
  //test to see if any data is returned 
+
+ loadWithFetch("movies.json").subscribe(renderMovies);
 // click.flatMap(e=>load("movies.json")).subscribe(o=>console.log(o));
-click.flatMap(e=>load("moviess.json")) //seperate function to load data 
+click.flatMap(e=>loadWithFetch("movies.json")) //seperate function to load data 
 .subscribe(  // and adding a subscribe to dpecify what we have to do with loaded data
     renderMovies,  //in this case display movies
     e => console.log(`error: ${e}`),  //next this

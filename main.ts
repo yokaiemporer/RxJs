@@ -14,7 +14,7 @@ function load(url: string) { // this code does not execute until someone subscri
             let data = JSON.parse(xhr.responseText);
             observer.next(data);
             observer.complete();
-        });// clear child data to not make it look stacked
+        });
         xhr.open("GET",url);
         xhr.send();
     });
@@ -27,7 +27,7 @@ function renderMovies(movies) {
         let div = document.createElement("div");
         div.innerText = m.title;
         output.appendChild(div);
-    });
+    });// clear child data to not make it look stacked
 }
 load("movies.json");  //test to see if any data is returned 
 // click.flatMap(e=>load("movies.json")).subscribe(o=>console.log(o));

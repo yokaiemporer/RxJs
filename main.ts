@@ -6,7 +6,7 @@ let output = document.getElementById('output');
 let button = document.getElementById('button');
 
 let click = Observable.fromEvent(button, "click")
-function load(url: string) {
+function load(url: string) { // this code does not execute until someone subscribes!!
     return Observable.create(observer => {
 
         let xhr = new XMLHttpRequest();
@@ -14,7 +14,7 @@ function load(url: string) {
             let data = JSON.parse(xhr.responseText);
             observer.next(data);
             observer.complete();
-        });
+        });// clear child data to not make it look stacked
         xhr.open("GET",url);
         xhr.send();
     });
@@ -29,12 +29,13 @@ function renderMovies(movies) {
         output.appendChild(div);
     });
 }
-//same thing bfore flat map
-click.subscribe(
-    e => load("movies.json").subscribe(o=>console.log(o)),  //this gets called first
+load("movies.json");  //test to see if any data is returned 
+// click.flatMap(e=>load("movies.json")).subscribe(o=>console.log(o));
+click.flatMap(e=>load("movies.json")) //seperate function to load data 
+.subscribe(  // and adding a subscribe to dpecify what we have to do with loaded data
+    renderMovies,  //in this case display movies
     e => console.log(`error: ${e}`),  //next this
     () => console.log("complete") //lastly this
 )
-//there is a nesting of scubscribe inside one another 
-//so we can better implment this in next commit
+
 

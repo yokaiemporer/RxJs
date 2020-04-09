@@ -22,10 +22,24 @@ function load(url: string) { // this code does not execute until someone subscri
         });
         xhr.open("GET",url);
         xhr.send();
-    }).retry(3);// try thrice
+    }).retryWhen(retryStrategy({attempts:3,delay:1500}));// : here
     
 
 
+}
+function retryStrategy({attempts=4,delay=1000})//= here
+{
+return function(errors)
+{
+    return errors
+    .scan((acc,value)=>{//accumulator
+
+        console.log(acc,value);
+        return acc+1;
+    },0)
+    .takeWhile(acc=>acc<attempts)
+    .delay(delay);
+}
 }
 function renderMovies(movies) {
     movies.forEach(m => {
